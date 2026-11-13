@@ -353,6 +353,153 @@ html[lang=en] .segmented button{white-space:normal}
 @media (max-width: 960px) {
   .research-layout .orb-supporting > .card { grid-column: 1/-1; }
 }
+
+.research-filters > h2 {
+  margin: 0 0 10px;
+  font: 400 1.3rem/1.2 var(--editorial);
+}
+.research-filters .controls { border-block-start: 0; padding-block-start: 0; }
+.research-filters .section-tabs { margin-block: 12px; }
+.research-results:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+
+@media (min-width: 900px) {
+  .research-layout {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .research-layout .workspace {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 0;
+  }
+  .research-layout main { height: 100%; min-height: 0; overflow: auto; }
+  .research-layout main:has(.research-workspace) { overflow: hidden; }
+  .research-layout .site-footer { margin-block: 0; padding-block: 6px; }
+  .research-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    height: 100%;
+  }
+  .research-filters {
+    min-height: 0;
+    padding: 19px 18px 12px 0;
+    border-inline-end: 1px solid var(--rule);
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .research-filters .controls { display: grid; gap: 6px; padding-block-end: 6px; }
+  .research-filters .window-set .segmented,
+  .research-filters .weekday-set .segmented {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .research-filters .window-set .segmented { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .research-filters .parameter-set .segmented > button { flex: 1 1 36px; }
+  .research-filters .segmented button { min-width: 0; min-height: 36px; padding: 4px; white-space: normal; }
+  .research-filters .section-tabs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px 4px;
+    margin-block: 7px;
+  }
+  .research-filters .section-tabs button {
+    min-height: 34px;
+    padding: 2px 2px 3px;
+    white-space: normal;
+    font-size: 12px;
+    line-height: 1.15;
+    hyphens: auto;
+  }
+  .research-filters .range-field { max-width: 100%; line-height: 1.2; }
+  .research-filters .range-field select, .research-filters .range-field input,
+  .research-filters .month-field input, .research-filters .month-controls button,
+  .research-filters .range-levels button { min-height: 36px; }
+  .research-filters .month-controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+    gap: 5px 7px;
+    padding-block-start: 5px;
+  }
+  .research-filters .month-field input { width: 100%; min-width: 0; }
+  .research-filters .month-error:empty, .research-filters .range-error:empty { display: none; }
+  .research-filters .month-controls button, .research-filters .range-levels button {
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+  .research-filters .month-error:not(:empty), .research-filters .range-error:not(:empty) { grid-column: 1/-1; }
+  .research-filters .range-options, .research-filters .range-levels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px 8px;
+    margin-block-end: 0;
+  }
+  .research-filters .range-options > .range-field { align-self: stretch; align-content: space-between; }
+  .research-filters .range-options .close-set, .research-filters .range-levels { grid-column: 1/-1; }
+  .research-filters .range-levels input { width: 100%; }
+  .research-results { min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 0 10px 18px 23px; }
+  .research-results .page-heading { margin-block: 19px 12px; }
+  .research-results .page-heading h1 { font-size: 2.45rem; }
+  .research-results .orb-overview { grid-template-columns: minmax(0, 1fr); gap: 7px; margin-top: 10px; }
+  .research-results .orb-overview > .overview-summary { grid-column: 1; border-inline-start: 0; padding-inline-start: 0; }
+  .research-results .overview-summary .chart-content { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1fr); gap: 10px 16px; align-items: start; }
+  .research-results .overview-summary .summary-strip { grid-column: 1/-1; }
+  .research-results .card { padding-block: 9px; }
+  .research-results .report-grid:not(.orb-overview) > .card { grid-column: 1/-1; }
+  .research-results .orb-supporting { margin-top: 12px; }
+  .research-results .report-space { height: 7px; }
+}
+/* Keep the report directory below the header at every viewport width. */
+.research-layout { --header-height: 59px; }
+.research-layout .mobile-header {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  min-height: var(--header-height);
+  background: var(--paper);
+}
+.research-layout .sidebar {
+  position: fixed;
+  z-index: 10;
+  top: var(--header-height);
+  bottom: auto;
+  inset-inline: 0;
+  max-height: calc(100dvh - var(--header-height));
+  box-shadow: 0 8px 16px #1a28221a;
+}
+@media (min-width: 900px) and (max-height: 780px) {
+  .research-filters { padding-block: 11px 5px; }
+  .research-filters > h2 { margin-block-end: 5px; }
+  .research-filters .control-set, .research-filters .month-field { row-gap: 2px; }
+  .research-filters .controls { gap: 4px; }
+  .research-filters .section-tabs { margin-block: 5px; }
+  .research-filters .range-field select, .research-filters .range-field input,
+  .research-filters .range-levels button { min-height: 32px; padding-block: 3px; }
+  .research-filters .range-field { gap: 2px; font-size: 12px; }
+}
+@media (min-width: 1100px) and (max-height: 780px) {
+  .research-filters:has([data-ib-duration]) .window-set .segmented {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .research-filters:has([data-ib-duration]) .window-set button {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+  .research-filters .range-options:has(.range-levels) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .research-filters .range-levels { grid-column: span 3; }
+}
+@media (min-width: 900px) and (max-width: 1099px) {
+  .research-filters .section-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .research-filters .month-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .research-filters .month-controls button { justify-self: start; }
+  .research-filters .range-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 899px) {
+  .research-filters { margin-block-start: 14px; }
+}
 </style>
 </head>
 <body>
@@ -2120,6 +2267,7 @@ const ibSettings = {
 };
 let rangeCache;
 let paintFrame = 0;
+let workspaceScroll = null;
 const observer = new ResizeObserver(schedulePaint);
 observer.observe(main);
 
@@ -2128,6 +2276,11 @@ function schedulePaint() {
   paintFrame = requestAnimationFrame(() => {
     paintCharts(main, displayed);
     if (snapshot?.release) localizePage(main);
+    if (workspaceScroll) {
+      main.querySelector('.research-results').scrollTop = workspaceScroll.results;
+      main.querySelector('.research-filters').scrollTop = workspaceScroll.filters;
+      workspaceScroll = null;
+    }
   });
 }
 
@@ -2272,7 +2425,16 @@ function activeRangeCounts(def, option, firstMonth, lastMonth) {
   return rangeCache.counts;
 }
 
-function renderReport(heading = true) {
+function renderReport(heading = true, resetResults = heading) {
+  const previousResults = main.querySelector('.research-results');
+  if (previousResults && !heading) {
+    workspaceScroll = {
+      results: resetResults ? 0 : workspaceScroll?.results ?? previousResults.scrollTop,
+      filters: workspaceScroll?.filters ?? main.querySelector('.research-filters').scrollTop,
+    };
+  } else {
+    workspaceScroll = null;
+  }
   const meta = reportIndex.get(report);
   const def = snapshot.reports[report];
   const param = paramsByReport.get(report) ?? def.default;
@@ -2333,8 +2495,9 @@ function renderReport(heading = true) {
   const tabBar = tabs ? reportTabs(tabs, meta.title) : '<div class="report-space"></div>';
   const leadCount = orbOverview && sections[0]?.weekday ? 2 : 0;
   const lead = leadCount ? '<div class="report-grid orb-overview">' + sections.slice(0, leadCount).map(chartCard).join('') + '</div>' : '';
+  const viewSettings = settings ? rangeControls(tab, settings, duration) : '';
   const cards = '<div id="report-charts"' + (tabs ? ' role="tabpanel" aria-labelledby="report-tab-' + selectedTab + '"' : '') + '>' +
-    (settings ? rangeControls(tab, settings, duration) : '') + '<div class="report-grid' + (tabs && selectedTab && sections.length === 1 ? ' detail' : '') +
+    (snapshot.release ? '' : viewSettings) + '<div class="report-grid' + (tabs && selectedTab && sections.length === 1 ? ' detail' : '') +
     (leadCount ? ' orb-supporting' : orbOverview ? ' orb-overview' : '') + '">' +
     (sections.length ? sections.slice(leadCount).map(chartCard).join('') : '<p class="error-message" role="status">' +
       (hasWithheldWeekdays ? '所選星期沒有可顯示樣本。可改選全部交易日或其他月份。' : '所選條件沒有此報表的有效樣本。') + '</p>') + '</div></div>';
@@ -2344,14 +2507,19 @@ function renderReport(heading = true) {
     document.title = meta.title + ' | EdgeLab';
   }
   const showSubtitle = !snapshot.release || pageLanguage !== 'en';
-  main.innerHTML = '<header class="page-heading report-heading"><div><h1>' + escapeHtml(meta.title) + '</h1>' +
+  const title = '<header class="page-heading report-heading"><div><h1 id="report-title">' + escapeHtml(meta.title) + '</h1>' +
     (showSubtitle ? '<p>' + escapeHtml(meta.english) + '</p>' : '') + '</div>' +
     '<div class="report-context"><span class="session">RTH 日盤</span><span class="window-date" aria-live="polite">' +
-    fmtDate(from) + ' – ' + fmtDate(to) + '</span></div></header>' +
-    controls(def, param, settings) + weekdayNotice + lead + tabBar + cards + note +
-    '<details class="report-method"><summary>報表計算方法</summary><p>' +
+    fmtDate(from) + ' – ' + fmtDate(to) + '</span></div></header>';
+  const filterControls = controls(def, param, settings);
+  const methodology = '<details class="report-method"><summary>報表計算方法</summary><p>' +
     escapeHtml(snapshot.release && pageLanguage === 'en' ? englishMethods[report] : (useMonthly && customMethods[report]) || methods[report]) +
     (snapshot.release && report === 'orb' ? ' 首破時間按 15 分鐘、延伸按 0.25 倍彙總。' : '') + '</p></details>';
+  main.innerHTML = snapshot.release
+    ? '<div class="research-workspace"><aside class="research-filters" aria-label="報表篩選">' +
+      '<h2>報表篩選</h2>' + filterControls + (tabs ? tabBar : '') + viewSettings + '</aside>' +
+      '<section class="research-results" tabindex="0" aria-labelledby="report-title">' + title + weekdayNotice + lead + cards + note + methodology + '</section></div>'
+    : title + filterControls + weekdayNotice + lead + tabBar + cards + note + methodology;
   displayed = report === 'of-delta' ? sections.map(section => ({
     ...section, countHeader: section.y === '%' ? '正 Delta 日數／有資料的交易日數' : '有資料的交易日數',
   })) : report === 'of-imb' ? sections.map(section => section.type === 'signed'
@@ -2365,6 +2533,8 @@ function renderReport(heading = true) {
 }
 
 function renderMethods() {
+  workspaceScroll = null;
+  main.scrollTop = 0;
   document.title = '資料與方法 | EdgeLab';
   breadcrumb.innerHTML = '<strong>資料與方法</strong>';
   displayed = [];
@@ -2435,7 +2605,7 @@ main.addEventListener('click', event => {
   const toggleWeekday = attr === 'data-weekday' && value !== 'all';
   if (button.getAttribute('aria-selected') === 'true' || (!toggleWeekday && button.getAttribute('aria-pressed') === 'true')) return;
   reportControls[attr](value);
-  renderReport(false);
+  renderReport(false, attr === 'data-tab');
   main.querySelector('[' + attr + '="' + value + '"]')?.focus({ preventScroll: attr !== 'data-tab' });
 });
 main.addEventListener('change', event => {
