@@ -2,38 +2,38 @@
 
 **E-mini S&P 500 Futures Research Portfolio**
 
-EdgeLab 是一個互動歷史統計網站，展示 ES 日盤的開盤區間突破（ORB）、初始平衡區間（IB）、波幅、尾盤及訂單流。15 份報表包括分時 Delta、累積 Delta、成交量分布、大單頻率和買賣失衡。
+EdgeLab is an interactive portfolio of 15 historical ES session reports covering opening ranges, initial balance, volatility, the final trading hour, and order flow. The order flow reports cover intraday Delta, cumulative Delta, volume profile, large trades, and buy/sell imbalance.
 
-## 在本機開啟
+## Open locally
 
-下載 [`index.html`](./index.html)，用 Chrome 或 Edge 開啟。HTML 已包含圖表、篩選功能及統計摘要，可離線使用。瀏覽器足以運行，毋須帳戶、API key 或另外下載行情。
+Download [`index.html`](./index.html) and open it in Chrome or Edge. The file includes the charts, filters, and statistical summaries for offline use. English is the default, with Traditional Chinese available in the language menu.
 
-如想用本機網址預覽，在只存放發佈檔案的資料夾執行以下指令，再開啟 `http://127.0.0.1:8000/`。此方法需要 Python 3。
+To preview it through a local web server, run the following command with Python 3 from the folder containing the published files, then open `http://127.0.0.1:8000/`.
 
 ```sh
 python -m http.server 8000 --bind 127.0.0.1
 ```
 
-## 報表預覽
+## Report previews
 
-### 開盤區間突破（ORB）
+### Opening Range Breakout (ORB)
 
-![15 分鐘開盤區間的突破類型與星期比較](./screenshots/orb-overview.png)
+![Breakout types and weekday comparisons for the 15-minute opening range](./screenshots/orb-overview.png)
 
-### 初始平衡區間（IB）
+### Initial Balance (IB)
 
-![90 分鐘初始平衡區間的第二次突破率，按首破方向分組](./screenshots/initial-balance.png)
+![Opposite-side breakout rates by first-break direction for the 90-minute initial balance](./screenshots/initial-balance.png)
 
-### 分時 Delta
+### Delta by Time of Day
 
-![15 分鐘淨 Delta 時段分布與各時段有資料的交易日數](./screenshots/delta.png)
+![Net Delta by 15-minute interval with the number of trading days with data](./screenshots/delta.png)
 
-### 手機版星期比較
+### Mobile weekday comparison
 
-![窄屏統計表橫向捲動後，星期欄仍然固定在左側](./screenshots/weekday-mobile.png)
+![The weekday column remains visible while the mobile table scrolls horizontally](./screenshots/weekday-mobile.png)
 
-## 資料範圍
+## Data coverage
 
-- 可自選 2019 年 1 月至 2026 年 8 月的起訖月份。完整日盤統計截至 2026 年 8 月 28 日。歷史來源截至 8 月 31 日 11:59 ET，當日交易時段尚未完結。
-- 使用歷史原始價格。報表列出各自的合資格樣本。成交量以合約數計，大單事件以筆數計。
-- 報表顯示歷史事件發生率。網站沒有模擬成交、費用、滑點或資金曲線。計算口徑可在網站的「資料與方法」查閱。
+- Select start and end months from January 2019 through August 2026. Complete-session statistics end on August 28, 2026. Source data ends on August 31 at 11:59 ET, during an incomplete session.
+- Reports use unadjusted historical prices and show their eligible sample sizes. Volume is measured in contracts and large trade events are counted as events.
+- Rates describe historical events. The reports do not simulate fills, fees, slippage, or equity curves. See the [statistical methodology](./METHODOLOGY.md) for definitions and denominators.

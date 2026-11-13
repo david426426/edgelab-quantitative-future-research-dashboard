@@ -158,11 +158,15 @@ main{--plot-height:280px;--donut-height:240px}
   main{--donut-height:158px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+.header-actions{display:flex;align-items:center;gap:8px}
+[data-language]{min-height:36px;padding:4px 6px;border:1px solid var(--rule);border-radius:6px;background:var(--panel);color:var(--ink);font:inherit;font-size:12px}
+html[lang=en] .segmented button{white-space:normal}
+@media(max-width:690px){.masthead [data-language]{display:none}.mobile-header [data-language]{min-height:44px}html[lang=en] .section-tabs{grid-template-columns:repeat(auto-fit,minmax(83px,1fr))}}
 </style>
 </head>
 <body>
   <a class="skip" href="#content">跳至報表內容</a>
-  <header class="mobile-header"><a class="wordmark" href="#orb" aria-label="EdgeLab 首頁"><span data-icon="logo"></span>EdgeLab</a><button type="button" id="menu-toggle" aria-controls="sidebar" aria-expanded="false"><span data-icon="menu"></span>報表導覽</button></header>
+  <header class="mobile-header"><a class="wordmark" href="#orb" aria-label="EdgeLab 首頁"><span data-icon="logo"></span>EdgeLab</a><div class="header-actions"><select data-language aria-label="Language / 語言" hidden><option value="en">English</option><option value="zh-Hant" lang="zh-Hant">繁體中文</option></select><button type="button" id="menu-toggle" aria-controls="sidebar" aria-expanded="false"><span data-icon="menu"></span>報表導覽</button></div></header>
   <aside class="sidebar" id="sidebar">
     <a class="wordmark" href="#orb" aria-label="EdgeLab 首頁"><span data-icon="logo"></span>EdgeLab</a>
     <p class="brand-note">ES 歷史研究</p>
@@ -170,7 +174,7 @@ main{--plot-height:280px;--donut-height:240px}
     <a class="method-link" href="#methods"><span data-icon="book"></span>資料與方法</a>
   </aside>
   <div class="workspace">
-    <div class="masthead"><span id="breadcrumb"></span><span class="instrument">E-mini S&amp;P 500 Futures <span>／</span> ES</span></div>
+    <div class="masthead"><span id="breadcrumb"></span><div class="header-actions"><span class="instrument">E-mini S&amp;P 500 Futures <span>／</span> ES</span><select data-language aria-label="Language / 語言" hidden><option value="en">English</option><option value="zh-Hant" lang="zh-Hant">繁體中文</option></select></div></div>
     <main id="content" tabindex="-1"><noscript>啟用 JavaScript 後即可切換報表並瀏覽統計圖表。</noscript></main>
     <footer class="site-footer"><span>EdgeLab · ES 歷史研究</span><span id="snapshot-note"></span><a href="#methods">資料與方法</a></footer>
   </div>
@@ -1412,6 +1416,477 @@ function buildIbSections(groups, settings) {
   return { n, sections };
 }
 
+// Rendering keys stay in their original language so filters and calculations share one data model.
+const englishLabels = Object.fromEntries(`
+價量分析|Price and Volume
+開盤與關鍵價位|Opening and Key Levels
+開盤區間突破|Opening Range Breakout
+初始平衡區間|Initial Balance
+跳空回補|Gap Fill
+開盤 K 線延續|Opening Candle Continuation
+開盤位置|Opening Location
+前日區間互動|Previous Day Range
+波動與時段|Volatility and Timing
+日內波幅與 ADR／ATR|Daily Range and Volatility
+日內高低點時段|Timing of Session Extremes
+分時成交量與波幅|Intraday Volume and Range
+尾盤分析|Power Hour
+尾盤區間突破|Power Hour Breakout
+訂單流|Order Flow
+分時 Delta|Delta by Time of Day
+累積 Delta|Cumulative Delta
+成交量分布|Volume Profile
+大單頻率|Large Trade Frequency
+買賣失衡|Buy/Sell Imbalance
+1 個月|1 Month
+3 個月|3 Months
+6 個月|6 Months
+12 個月|12 Months
+開盤區間|Opening Range
+回補比例|Gap Fill Target
+基準期間|Lookback
+分組間隔|Interval
+樣本上限|Sample Limit
+自訂月份|Custom Months
+統計期間|Date Range
+交易日|Sessions
+全部|All
+分鐘|min
+報表篩選|Report Filters
+起始月份|Start Month
+結束月份|End Month
+套用期間|Apply Dates
+子報表設定|Report Settings
+子報表| views
+回撤門檻|Retracement
+首次突破段|First Breakout Episode
+全部突破段|All Breakout Episodes
+突破範圍|Breakout Episodes
+區間大小|Range Size
+全日突破類型|Session Breakout Type
+向上目標（倍）|Upside Targets (×)
+向下目標（倍）|Downside Targets (×)
+套用目標|Apply Targets
+首破確認|First Break Confirmation
+突破確認|Breakout Confirmation
+K 線週期|Bar Interval
+早晚分界（ET）|Early/Late Cutoff (ET)
+對側突破確認|Opposite Break Confirmation
+回到區間確認|Re-entry Confirmation
+比較條件|Compare By
+開盤缺口|Opening Gap
+IB K 線方向|IB Candle Direction
+隔夜方向|Overnight Direction
+缺口大小|Gap Size
+以有日盤來源記錄的觀察為母體|Based on available RTH observations
+完整 RTH 日盤|Complete RTH Sessions
+個有效交易日|eligible sessions
+樣本少於 30 日|Fewer than 30 eligible sessions
+星期統計省略樣本不足的月份。全星期統計仍計入該等月份。|Weekday breakdowns omit months with insufficient samples. All-weekday totals include those months.
+所選星期沒有可顯示樣本。可改選全部交易日或其他月份。|No samples are available for the selected weekdays. Select all sessions or try different months.
+所選條件沒有此報表的有效樣本。|No eligible observations for these filters.
+RTH 日盤|RTH
+報表計算方法|Report Methodology
+首破時間按 15 分鐘、延伸按 0.25 倍彙總。|First-break timing uses 15-minute bins, and extensions use 0.25× steps.
+正 Delta 日數／有資料的交易日數|Positive Delta Days / Days with Data
+有資料的交易日數|Trading Days with Data
+有效來源記錄數|Eligible Source Records
+筆來源記錄|source records
+資料與方法|Data and Methodology
+ES 日盤歷史統計|Historical ES Session Statistics
+ES 歷史研究|ES Historical Research
+資料涵蓋|Data Coverage
+日盤時段與樣本|Trading Hours and Samples
+統計期間與不確定性|Date Ranges and Uncertainty
+歷史結果與單位|Historical Results and Units
+E-mini S&P 500 期貨歷史資料，自|Historical E-mini S&P 500 futures data from
+ 至 | to 
+ET。最後交易日未完結，報表統計截至|ET. The final session is incomplete. Reports end on
+。使用原始價格。|. Prices are unadjusted.
+RTH 日盤為 09:30–16:00 美國東部時間。價量及 CVD 報表以完整日盤為基礎。其餘訂單流報表按各自有效觀察計算。各圖列出相應樣本。|Regular trading hours are 09:30–16:00 Eastern Time. Price and volume reports and CVD use complete RTH sessions. Other order flow reports use their eligible observations. Each chart shows its sample.
+預設及自訂期間共用日曆月摘要。1、3、6、12 個月由起始月份首日計至統計截止日；最後一個月截至最後完整日盤。若某月任一星期組少於|Presets and custom ranges share calendar-month summaries. The 1-, 3-, 6-, and 12-month presets start on the first day of the starting month and end on the reporting cutoff. If any weekday group in a month has fewer than
+個合資格日，該月只提供全星期統計。|eligible sessions, that month is included only in all-weekday totals. 
+自訂期間包含所選起始及結束月份。比例以事件數除以合資格觀察數。適用時，95% 區間使用 Wilson 方法，分母少於 30 時省略區間。|Custom ranges include both selected months. Rates divide events by eligible observations. Where applicable, 95% Wilson intervals are omitted when the denominator is below 30.
+觸及率與維持率描述歷史價格事件。網站的統計範圍為市場行為，交易成交、費用、滑點與資金曲線屬獨立的策略評估。成交量以合約計；大單事件及來源記錄以筆數計。|Touch and hold rates describe historical market events. The reports do not simulate fills, fees, slippage, or equity curves. Volume is measured in contracts. Large trades and source records are counted as events or records.
+每個方向可輸入 1–8 個目標，範圍為 0.1–10 倍，間距為 0.1 倍。|Enter 1–8 targets per direction, from 0.1× to 10× in 0.1× increments.
+請選擇資料範圍內的起始及結束月份。|Select start and end months within the available data range.
+起始月份須早於或等於結束月份。|The start month must be on or before the end month.
+ES 歷史資料截至|ES historical data through
+最後交易日未完結|final session incomplete
+統計資料未能載入。請重新載入頁面。|Statistics could not load. Reload the page.
+跳至報表內容|Skip to report
+EdgeLab 首頁|EdgeLab Home
+報表導覽|Reports
+研究報表|Research Reports
+啟用 JavaScript 後即可切換報表並瀏覽統計圖表。|Enable JavaScript to use the interactive reports.
+查看統計表|View Data Table
+樣本少於 30|Sample below 30
+項目|Item
+比例|Rate
+事件數／樣本|Events / Sample
+95% 置信區間|95% Confidence Interval
+個交易日|sessions
+ 日| days
+ 前| or earlier
+時間（ET）|Time (ET)
+延伸倍數|Extension Multiple
+月份|Month
+統計|Statistic
+數值|Value
+中位數|Median
+25–75 百分位|25th–75th percentile
+樣本|Sample
+無有效樣本|No eligible observations
+樣本日數|Eligible Days
+曾突破率|Any Breakout Rate
+價值區涵蓋的分段|Value Area Bins
+成交量峰值|Point of Control
+價位（點）|Price (Points)
+成交量（合約）|Volume (Contracts)
+點|points
+日|days
+合約|contracts
+成交量|Volume
+次|episodes
+平均波幅|Mean Range
+平均波幅 · 價格點數|Mean range in points
+按逐月分組分布估算|Estimated from monthly grouped distributions
+相對|relative to
+倍數|multiples
+價格點數|points
+價格分段成交量|Volume by Price
+每 10 點一組 · 所選月份的全部有效日盤|10-point bins · All eligible sessions in the selected months
+有效交易日|Eligible Sessions
+總成交量|Total Volume
+分段成交量摘要|Volume Profile Summary
+統計項目|Statistic
+單位|Unit
+最高成交量價位組|Highest-Volume Price Bin
+該價位組成交量|Volume in Highest-Volume Bin
+該價位組成交量佔比|Share of Volume in Highest-Volume Bin
+來源記錄失衡比分位數|Source-Record Imbalance Percentiles
+逐月分位數 · 各月份獨立計算|Percentiles calculated separately for each month
+第 25 百分位|25th Percentile
+第 75 百分位|75th Percentile
+有效記錄|Eligible Records
+統計總覽|Overview
+星期比較|By Weekday
+收盤結果|Close Outcomes
+第二次突破|Second Breakout
+突破時點|Breakout Timing
+突破後回撤|Post-Breakout Retracement
+向上突破後回撤|Retracement after Upside Breakout
+向下突破後回撤|Retracement after Downside Breakout
+區間形成順序|Range Formation
+高低點形成時段|High/Low Timing
+突破前回撤|Pre-Breakout Retracement
+延伸目標|Extension Targets
+首段延伸|First-Move Extension
+開盤及隔夜條件|Opening and Overnight Context
+跳空上開|Gap Up
+跳空下開|Gap Down
+平開|Flat Open
+初始平衡突破分布|Initial Balance Breakout Distribution
+確認|confirmation
+單邊突破|Single-Sided Breakout
+曾突破區間|Any Range Breakout
+收盤維持率|Close Hold Rate
+向上首破|Upside First Break
+向下首破|Downside First Break
+首破方向明確的交易日|Sessions with a clear first-break direction
+整體維持率|Overall Hold Rate
+延伸倍數觸及率|Extension Target Hit Rate
+曾突破區間的交易日 · 以區間寬度計|Breakout sessions · Multiples of range width
+突破後邊界回測|Boundary Retest after Breakout
+邊界回測率|Boundary Retest Rate
+回測後收盤維持率|Close Hold Rate after Retest
+回測自首破 K 線之後開始|Retest observation starts after the first breakout bar
+全部突破日|All Breakout Sessions
+只破上方|Upside Only
+只破下方|Downside Only
+雙向突破|Both Sides
+日盤收盤位置|Session Close Location
+收於邊界計入區間內|A close at either boundary counts as inside
+各突破類型的收盤位置|Close Location by Breakout Type
+突破類型|Breakout Type
+首破後對側突破率|Opposite-Side Breakout Rate
+先破上方|Upside First
+先破下方|Downside First
+由下一根 K 線開始觀察 · 分母為該方向首破日|From the next bar · Denominator is first-break sessions in that direction
+首破方向未明|Unclear First-Break Direction
+高點|High
+低點|Low
+高低點首次形成時段|First Formation of High and Low
+每 15 分鐘 · 各極值按首次出現的 K 線計算|15-minute intervals · First bar to record each extreme
+高點先形成|High Formed First
+低點先形成|Low Formed First
+由 IB 結束至首破前 · 只計後形成一側先被突破的日子|From IB end to first breakout · Sessions where the later-formed side broke first
+向上|Upside
+向下|Downside
+突破延伸目標| Breakout Targets
+每個交易日的首次定向突破段|First directional breakout episode in each session
+每個突破段為一個觀察|One observation per breakout episode
+合資格樣本|Eligible Sample
+首次突破段的延伸摘要|First-Move Extension Summary
+首破方向|First-Break Direction
+平均延伸區間|Mean Extension Range
+最大值所在區間|Bin Containing Maximum
+相對開盤價 · 依分組上下限計算|Relative to opening price · Based on grouped bounds
+首段延伸分布|First-Move Extension Distribution
+延伸幅度|Extension
+按 IB 大小比較突破|Breakouts by IB Size
+區間寬度相對開盤價|Range width relative to opening price
+各大小組延伸至 1 倍|1× Extension by Range Size
+各組有突破且區間寬度大於零的交易日|Breakout sessions with positive range width in each group
+開盤缺口與 IB 突破|Opening Gap and IB Breakouts
+開盤與前一完整日盤收盤之差 · 缺口百分比以前收為基準|Open versus the prior complete RTH close · Gap percentage uses prior close
+開盤方向|Opening Direction
+隔夜方向與 IB 突破|Overnight Direction and IB Breakouts
+隔夜上升|Overnight Up
+隔夜下跌|Overnight Down
+開盤持平|Unchanged Open
+今日 RTH 開盤相對前一完整日盤收盤|Current RTH open versus prior complete RTH close
+IB K 線方向與突破|IB Candle Direction and Breakouts
+收高於開|Closed Higher
+收低於開|Closed Lower
+開收相同|Unchanged
+以初始平衡區間的開盤與收盤判定方向|Direction compares the opening and closing prices of the IB window
+星期一|Mon
+星期二|Tue
+星期三|Wed
+星期四|Thu
+星期五|Fri
+週一|Mon
+週二|Tue
+週三|Wed
+週四|Thu
+週五|Fri
+星期|Weekday
+早晚突破|Early vs. Late
+未突破|No Breakout
+區間上方|Above Range
+區間內|Inside Range
+區間下方|Below Range
+按 15 分鐘區間累積 · 所選星期的合資格交易日 · ET|15-minute bins · Eligible sessions on selected weekdays · ET
+沿首次突破方向 · 每 0.25 倍開盤區間寬度|First-break direction · 0.25× opening-range width steps
+曾突破|Any Breakout
+任一分鐘同時破兩側|Both Sides in Any Single Minute
+按星期比較全日突破|Session Breakouts by Weekday
+各星期合資格交易日 · ET|Eligible sessions by weekday · ET
+合資格突破日|Eligible Breakout Sessions
+同根 K 線雙向|Both Sides in Same Bar
+全部位置|All Locations
+結束位置（距後形成側）|End Location (from Later-Formed Side)
+截至 |Through 
+ 後| and later
+早晚突破分布|Early and Late Breakouts
+較早突破|Early Breakout
+較晚突破|Late Breakout
+ · 以 | · Cutoff 
+ ET 為分界| ET
+早晚突破收盤維持率|Close Hold Rate by Breakout Timing
+各時段首破方向明確的交易日|Sessions with a clear first-break direction in each period
+觸及突破邊界|Touched Breakout Boundary
+全日單邊突破 · 自首破 K 線之後量度|Single-sided breakout sessions · Measured after the first breakout bar
+形成順序未明|Unclear Formation Order
+區間形成順序與首次突破|Range Formation Order and First Breakout
+以極值首次出現的 K 線判定 · 結束位置由後形成的一側起計|First bar to record each extreme · End location measured from the later-formed side
+形成順序|Formation Order
+影線|Wick
+K 線收盤|Bar Close
+首次突破方向|First-Break Direction
+首破同分鐘雙向|Both Sides in First Breakout Minute
+首次突破時間累積分布|Cumulative First-Break Timing
+累積首破|Cumulative First Breaks
+按 15 分鐘區間累積 · 合資格交易日 · ET|15-minute bins · Eligible sessions · ET
+向上突破|Upside Breakout
+向下突破|Downside Breakout
+按首次突破方向 · 95% 置信區間|By first-break direction · 95% confidence interval
+缺口回補結果|Gap Fill Outcomes
+回補門檻|Fill Target
+缺口至少 1 點|Minimum gap of 1 point
+首次回補時間累積分布|Cumulative Gap Fill Timing
+累積回補|Cumulative Gap Fills
+每 15 分鐘彙總 · 累積回補比例 · 美國東部時間|15-minute bins · Cumulative fill rate · Eastern Time
+收盤前回補|Filled by Close
+按缺口大小比較回補率|Fill Rate by Gap Size
+以缺口絕對值分組 · 95% 置信區間|Grouped by absolute gap size · 95% confidence interval
+按缺口方向比較回補率|Fill Rate by Gap Direction
+向上跳空|Gap Up
+向下跳空|Gap Down
+各方向合資格缺口日 · 95% 置信區間|Eligible gap sessions by direction · 95% confidence interval
+開盤方向延續率|Opening Direction Continuation
+向上開盤 K 線|Up Opening Candle
+向下開盤 K 線|Down Opening Candle
+至日盤收盤 · 95% 置信區間|Through RTH close · 95% confidence interval
+整體延續率|Overall Continuation Rate
+平收開盤 K 線|Flat Opening Candle
+按開盤幅度比較延續率|Continuation by Opening Move
+以開盤 K 線開收差的絕對值分組|Grouped by absolute opening-candle move
+實體佔區間至少 70%|Body at Least 70% of Range
+開盤相對前日區間的位置|Open Relative to Prior Session Range
+高於前日高點|Above Prior High
+位於前日區間內|Inside Prior Range
+低於前日低點|Below Prior Low
+按開盤位置比較收盤結果|Close Outcome by Opening Location
+收盤高於或等於開盤 · 95% 置信區間|Close at or above open · 95% confidence interval
+前日區間邊界回測率|Prior Range Boundary Retest Rate
+開於前日高點之上|Opened Above Prior High
+開於前日低點之下|Opened Below Prior Low
+各方向開盤日為分母|Denominator is opening sessions in each group
+前日邊界首次觸及|First Touch of Prior Session Boundary
+先觸及上界|Upper Boundary First
+先觸及下界|Lower Boundary First
+同分鐘觸及兩側|Both Sides in Same Minute
+全日兩側均觸及|Both Sides Touched During Session
+觸及邊界後的收盤結果|Close after Boundary Touch
+收於前日上界之上|Closed Above Prior Upper Boundary
+收於前日下界之下|Closed Below Prior Lower Boundary
+各邊界觸及日為分母|Denominator is sessions that touched each boundary
+內包與外包日分布|Inside and Outside Day Distribution
+依日盤實際高低價分類|Classified by actual RTH highs and lows
+日內波幅相對歷史基準|Daily Range Relative to Historical Benchmarks
+第 10、25、50、75、90 百分位 · 倍數|10th, 25th, 50th, 75th, and 90th percentiles · multiples
+日內波幅／ADR|Daily Range / ADR
+日內波幅／ATR|Daily Range / ATR
+波幅達到 ADR|Range Reached ADR
+日內波幅與歷史基準分布|Daily Range and Benchmark Distributions
+實際波幅|Actual Range
+歷史 ADR|Historical ADR
+歷史 ATR|Historical ATR
+按星期比較波幅與成交量|Range and Volume by Weekday
+平均波幅（點）|Mean Range (Points)
+平均成交量（合約）|Mean Volume (Contracts)
+完整日盤 · 各星期分開統計|Complete RTH sessions · Grouped by weekday
+日內高低點首次出現時段|First Occurrence of Session High and Low
+日內最高價|Session High
+日內最低價|Session Low
+每 15 分鐘交易日佔比 · 美國東部時間|Share of sessions per 15-minute interval · Eastern Time
+日內高低點出現順序|Order of Session High and Low
+高點先出現|High First
+低點先出現|Low First
+日內最高點時段分布|Session High by Time of Day
+按星期分組 · 30 分鐘時段|By weekday · 30-minute intervals
+日內最低點時段分布|Session Low by Time of Day
+分時成交量|Volume by Time of Day
+平均成交量|Mean Volume
+每時段的日均成交合約數|Average contracts per session in each interval
+分時價格波幅|Range by Time of Day
+中位數波幅|Median Range
+中位數與第 25–75 百分位 · 價格點數|Median and interquartile range · points
+尾盤區間突破分布|Power Hour Breakout Distribution
+僅創新高|New High Only
+僅創新低|New Low Only
+15:00–16:00 ET · 相對尾盤前區間|15:00–16:00 ET · Relative to the preceding range
+尾盤突破率|Power Hour Breakout Rate
+按星期比較尾盤突破率|Power Hour Breakout Rate by Weekday
+各星期分開統計 · 95% 置信區間|By weekday · 95% confidence interval
+尾盤突破延伸幅度|Power Hour Breakout Extension
+只計已突破交易日 · 價格點數|Breakout sessions only · points
+日盤淨 Delta 時段分布|RTH Net Delta by Time of Day
+按時段加總 · 合約數|Totals by interval · contracts
+首個時段 Delta 為正|Positive Delta in First Interval
+正 Delta 交易日比例|Share of Positive Delta Sessions
+正 Delta 日|Positive Delta Sessions
+各時段以有資料的交易日為分母|Denominator is sessions with data in each interval
+分時總成交量|Total Volume by Time of Day
+所選期間的時段成交合約數|Contracts traded by interval in the selected period
+累積日盤 Delta 變化|Cumulative RTH Delta Change
+累積 Delta 變化|Cumulative Delta Change
+逐月加總日盤 CVD 變化|Monthly sums of intraday CVD changes
+日盤 CVD 與價格同方向|Sessions Where CVD and Price Moved Together
+月度 Delta 與價格變化|Monthly Delta and Price Changes
+橫軸：Delta（合約） · 縱軸：價格變化（點）|X: Delta (contracts) · Y: Price change (points)
+月度變化摘要|Monthly Change Summary
+有效日數|Eligible Days
+CVD 變化（合約）|CVD Change (Contracts)
+價格變化（點）|Price Change (Points)
+價格變化|Price Change
+方向一致日數|Days in the Same Direction
+大單事件交易日分布|Sessions with Large Trades
+有大單事件|With Large Trades
+無大單事件|Without Large Trades
+大單事件總數|Total Large Trade Events
+分時大單事件頻率|Large Trade Events by Time of Day
+大單事件（筆）|Large Trade Events
+大單事件|Large Trade Events
+來源標記的大單事件數|Count of source-flagged large trade events
+月度大單摘要|Monthly Large Trade Summary
+有資料日數|Days with Data
+有大單事件日數|Days with Large Trades
+來源記錄方向分布|Source Records by Delta Direction
+零 Delta|Zero Delta
+日盤淨 Delta 為正|Positive RTH Net Delta
+月度成交量加權失衡|Monthly Volume-Weighted Imbalance
+淨 Delta／成交量|Net Delta / Volume
+內包日|Inside Day
+外包日|Outside Day
+其他|Other
+未觸及|No Touch
+已回補|Filled
+未回補|Unfilled
+同分鐘|Same Minute
+買方|Buy-Side
+賣方|Sell-Side
+筆|records
+上方|Above
+下方|Below
+`.trim().split('\n').map(line => line.split('|')));
+
+const englishMethods = {
+  orb: 'The range uses highs and lows from the selected opening interval. A subsequent one-minute high or low must strictly cross a boundary. A session that crosses both sides is a double breakout. If both sides break in the first minute, first direction is unknown. A close at the boundary is inside. Early cutoffs include bars completed by the cutoff. Retracements begin after the first breakout bar on single-sided days with positive range width. Formation order uses the first occurrence of each extreme. Extension is measured in opening-range widths.',
+  'initial-balance': 'The initial balance begins at 09:30 ET. A wick or bar close must strictly cross the boundary according to the chosen confirmation rule. Opposite breaks and retracements are measured after the first breakout bar. Pre-break retracements are measured from the end of IB and require the later-formed side to break first. An episode ends at the first bar to return to its boundary. Overnight direction compares the RTH open with the previous complete RTH close.',
+  'gap-fill': 'The gap is the open minus the prior eligible RTH close, with a minimum absolute size of one point. A gap fills when the target is reached by the session close. Timing uses all eligible gap sessions as its denominator.',
+  'opening-candle': 'The opening candle direction is compared with the direction from the session open to the close. Flat opening candles are reported separately. Continuation uses directional opening candles as its denominator.',
+  'opening-location': 'The opening price is compared with the prior eligible session high and low. Opens at a boundary count as inside. Close groups include closes equal to the open. Retest rates use the corresponding outside-open group as their denominator.',
+  'prev-day-range': 'First touch uses the prior eligible session’s volume distribution boundaries and includes equality. Inside and outside day classifications use actual RTH highs and lows. Inside includes equality. Outside requires a strict break of both sides.',
+  'adr-atr': 'ADR and ATR use the prior N eligible sessions, excluding the current session. Percentiles are estimated from pooled monthly distributions using 0.05× multiple bins and two-point price bins.',
+  'hod-lod': 'Use the first minute at which the session high or low occurs. If both occur in the same minute, formation order is unclear. Heatmap denominators are eligible sessions for each weekday.',
+  'intraday-volume-range': 'Contract volume and price range are calculated by session and time interval. Interval means use pooled monthly totals and eligible session counts.',
+  'power-break': 'Compare 15:00–16:00 ET with the preceding RTH range. Extension percentiles are estimated by combining monthly distributions grouped in one-point bins.',
+  'of-delta': 'Delta is aggressive buy volume minus aggressive sell volume. Net Delta is summed by interval. The positive Delta rate uses sessions with source data for that interval as its denominator.',
+  'of-cum': 'Daily CVD change is the difference between the first and last valid RTH CVD readings. Price changes use the same endpoints. Monthly curves accumulate the monthly sums of these daily changes.',
+  'of-profile': 'Combine all eligible sessions in the selected months and sum contract volume in ten-point price bins. The peak is the bin with the highest contract volume.',
+  'of-large': 'Count large trade events flagged in the source. Eligible sessions with zero events remain in the denominator. Event counts and contract volume are separate measures.',
+  'of-imb': 'Source-record imbalance percentiles are calculated separately for each month. Direction counts combine eligible source records across the selected months.',
+};
+
+const englishPattern = new RegExp(Object.keys(englishLabels).sort((a, b) => b.length - a.length)
+  .map(key => key.replace(/[.*+?^$\x7b\x7d()|[\]\\]/g, '\\$&')).join('|'), 'g');
+const originalLabels = new WeakMap();
+let pageLanguage = 'zh-Hant';
+
+function translatePageText(value) {
+  return value.replace(englishPattern, key => englishLabels[key]);
+}
+
+function localizePage(root) {
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
+    acceptNode: node => node.nodeType === Node.ELEMENT_NODE && node.matches('script, style, [data-language]')
+      ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+  });
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const old = originalLabels.get(node);
+      const value = old?.rendered === node.data ? old.source : node.data;
+      const rendered = pageLanguage === 'en' ? translatePageText(value) : value;
+      if (rendered !== node.data) node.data = rendered;
+      originalLabels.set(node, { source: value, rendered });
+      continue;
+    }
+    const attrs = originalLabels.get(node) ?? {};
+    for (const attr of ['aria-label', 'title', 'data-tip']) {
+      const current = node.getAttribute(attr);
+      if (current === null) continue;
+      const value = attrs[attr]?.rendered === current ? attrs[attr].source : current;
+      const rendered = pageLanguage === 'en' ? translatePageText(value) : value;
+      if (rendered !== current) node.setAttribute(attr, rendered);
+      attrs[attr] = { source: value, rendered };
+    }
+    if (Object.keys(attrs).length) originalLabels.set(node, attrs);
+  }
+}
+
 
 const paths = {
   logo: '<path d="M2 12h5l3-6 4 12 3-6h5"/>',
@@ -1450,7 +1925,10 @@ observer.observe(main);
 
 function schedulePaint() {
   cancelAnimationFrame(paintFrame);
-  paintFrame = requestAnimationFrame(() => paintCharts(main, displayed));
+  paintFrame = requestAnimationFrame(() => {
+    paintCharts(main, displayed);
+    if (snapshot?.release) localizePage(main);
+  });
 }
 
 function reportLink(id, title) {
@@ -1654,17 +2132,24 @@ function renderReport(heading = true) {
       '</span>' + icon('next') + '<strong>' + escapeHtml(meta.group === '訂單流' ? meta.title : meta.group) + '</strong>';
     document.title = meta.title + ' | EdgeLab';
   }
-  main.innerHTML = '<header class="page-heading report-heading"><div><h1>' + escapeHtml(meta.title) + '</h1><p>' + escapeHtml(meta.english) + '</p></div>' +
+  const showSubtitle = !snapshot.release || pageLanguage !== 'en';
+  main.innerHTML = '<header class="page-heading report-heading"><div><h1>' + escapeHtml(meta.title) + '</h1>' +
+    (showSubtitle ? '<p>' + escapeHtml(meta.english) + '</p>' : '') + '</div>' +
     '<div class="report-context"><span class="session">RTH 日盤</span><span class="window-date" aria-live="polite">' +
     fmtDate(from) + ' – ' + fmtDate(to) + '</span></div></header>' +
     controls(def, param, settings) + weekdayNotice + (tabs ? reportTabs(tabs, meta.title) : '<div class="report-space"></div>') + cards + note +
     '<details class="report-method"><summary>報表計算方法</summary><p>' +
-    escapeHtml((useMonthly && customMethods[report]) || methods[report]) +
+    escapeHtml(snapshot.release && pageLanguage === 'en' ? englishMethods[report] : (useMonthly && customMethods[report]) || methods[report]) +
     (snapshot.release && report === 'orb' ? ' 首破時間按 15 分鐘、延伸按 0.25 倍彙總。' : '') + '</p></details>';
   displayed = report === 'of-delta' ? sections.map(section => ({
     ...section, countHeader: section.y === '%' ? '正 Delta 日數／有資料的交易日數' : '有資料的交易日數',
   })) : report === 'of-imb' ? sections.map(section => section.type === 'signed'
     ? { ...section, countHeader: '有效來源記錄數', countUnit: '筆來源記錄' } : section) : sections;
+  if (snapshot.release) {
+    localizePage(main);
+    localizePage(breadcrumb);
+    if (heading && pageLanguage === 'en') document.title = meta.english + ' | EdgeLab';
+  }
   schedulePaint();
 }
 
@@ -1701,6 +2186,10 @@ function route() {
   updateNav();
   if (report === 'methods') renderMethods();
   else renderReport();
+  if (snapshot.release) {
+    localizePage(document.body);
+    if (report === 'methods' && pageLanguage === 'en') document.title = 'Data and Methodology | EdgeLab';
+  }
   if (changed) {
     closeMenu();
     window.scrollTo(0, 0);
@@ -1757,6 +2246,7 @@ main.addEventListener('submit', event => {
     /^(?:\d+(?:\.\d+)?|\.\d+)$/.test(token) && Number(token) >= 0.1 && Number(token) <= 10 &&
     Math.abs(Number(token) * 10 - Math.round(Number(token) * 10)) < 1e-8))) {
     form.querySelector('.range-error').textContent = '每個方向可輸入 1–8 個目標，範圍為 0.1–10 倍，間距為 0.1 倍。';
+    if (snapshot.release) localizePage(form);
     return;
   }
   ibSettings.targets = tokens.map(values => [...new Set(values.map(Number))].sort((a, b) => a - b));
@@ -1771,10 +2261,12 @@ main.addEventListener('submit', event => {
   const error = form.querySelector('.month-error');
   if (!snapshot.months.includes(from) || !snapshot.months.includes(to)) {
     error.textContent = '請選擇資料範圍內的起始及結束月份。';
+    if (snapshot.release) localizePage(form);
     return;
   }
   if (from > to) {
     error.textContent = '起始月份須早於或等於結束月份。';
+    if (snapshot.release) localizePage(form);
     return;
   }
   const [year, month] = to.split('-').map(Number);
@@ -1814,6 +2306,19 @@ document.addEventListener('keydown', event => {
 try {
   document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
   snapshot = JSON.parse(document.querySelector('#statistics').textContent);
+  if (snapshot.release) {
+    pageLanguage = 'en';
+    document.documentElement.lang = pageLanguage;
+    for (const control of document.querySelectorAll('[data-language]')) {
+      control.hidden = false;
+      control.addEventListener('change', () => {
+        pageLanguage = control.value;
+        document.documentElement.lang = pageLanguage;
+        for (const select of document.querySelectorAll('[data-language]')) select.value = pageLanguage;
+        route();
+      });
+    }
+  }
   customRange = [...selectedDates()];
   document.querySelector('#snapshot-note').textContent = 'ES 歷史資料截至 ' + snapshot.last.replaceAll('-', '/') +
     ' ' + snapshot.time + ' ET · 最後交易日未完結';
