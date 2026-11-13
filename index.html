@@ -379,12 +379,12 @@ html[lang=en] .segmented button{white-space:normal}
   .research-layout .site-footer { margin-block: 0; padding-block: 6px; }
   .research-workspace {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
     height: 100%;
   }
   .research-filters {
     min-height: 0;
-    padding: 19px 18px 12px 0;
+    padding: 19px 12px 12px 0;
     border-inline-end: 1px solid var(--rule);
     overflow: auto;
     overscroll-behavior: contain;
@@ -396,7 +396,7 @@ html[lang=en] .segmented button{white-space:normal}
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
   .research-filters .window-set .segmented { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .research-filters .parameter-set .segmented > button { flex: 1 1 36px; }
+  .research-filters .parameter-set .segmented > button { flex: 1 1 30px; }
   .research-filters .segmented button { min-width: 0; min-height: 36px; padding: 4px; white-space: normal; }
   .research-filters .section-tabs {
     display: grid;
@@ -411,6 +411,7 @@ html[lang=en] .segmented button{white-space:normal}
     font-size: 12px;
     line-height: 1.15;
     hyphens: auto;
+    overflow-wrap: anywhere;
   }
   .research-filters .range-field { max-width: 100%; line-height: 1.2; }
   .research-filters .range-field select, .research-filters .range-field input,
@@ -422,7 +423,7 @@ html[lang=en] .segmented button{white-space:normal}
     gap: 5px 7px;
     padding-block-start: 5px;
   }
-  .research-filters .month-field input { width: 100%; min-width: 0; }
+  .research-filters .month-field input { width: 100%; min-width: 0; padding-inline: 5px; }
   .research-filters .month-error:empty, .research-filters .range-error:empty { display: none; }
   .research-filters .month-controls button, .research-filters .range-levels button {
     padding-inline: 8px;
@@ -436,6 +437,7 @@ html[lang=en] .segmented button{white-space:normal}
     margin-block-end: 0;
   }
   .research-filters .range-options > .range-field { align-self: stretch; align-content: space-between; }
+  .research-filters .range-field select { width: 100%; min-width: 0; padding-inline: 4px; }
   .research-filters .range-options .close-set, .research-filters .range-levels { grid-column: 1/-1; }
   .research-filters .range-levels input { width: 100%; }
   .research-results { min-width: 0; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 0 10px 18px 23px; }
@@ -474,6 +476,7 @@ html[lang=en] .segmented button{white-space:normal}
   .research-filters .control-set, .research-filters .month-field { row-gap: 2px; }
   .research-filters .controls { gap: 4px; }
   .research-filters .section-tabs { margin-block: 5px; }
+  .research-filters .section-tabs button { min-height: 30px; }
   .research-filters .range-field select, .research-filters .range-field input,
   .research-filters .range-levels button { min-height: 32px; padding-block: 3px; }
   .research-filters .range-field { gap: 2px; font-size: 12px; }
@@ -492,7 +495,7 @@ html[lang=en] .segmented button{white-space:normal}
   .research-filters .range-levels { grid-column: span 3; }
 }
 @media (min-width: 900px) and (max-width: 1099px) {
-  .research-filters .section-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .research-filters .section-tabs, .research-filters .weekday-set .segmented { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .research-filters .month-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .research-filters .month-controls button { justify-self: start; }
   .research-filters .range-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -2361,11 +2364,21 @@ const customMethods = {
   'of-imb': '各月份分開計算來源記錄的失衡比分位數。方向分布以所選月份的有效來源記錄合併計算。',
 };
 
+const shortTabLabels = new Map([
+  ['突破後回撤', 'Post-Break Retrace'],
+  ['突破前回撤', 'Pre-Break Retrace'],
+  ['開盤及隔夜條件', 'Opening Context'],
+]);
+
 function reportTabs(tabs, title) {
   return '<div class="section-tabs" role="tablist" aria-label="' + escapeHtml(title + '子報表') + '">' +
-    tabs.map((label, i) =>
-      '<button type="button" role="tab" id="report-tab-' + i + '" data-tab="' + i + '" aria-controls="report-charts" tabindex="' +
-      (i === selectedTab ? '0' : '-1') + '" aria-selected="' + (i === selectedTab) + '">' + label + '</button>').join('') + '</div>';
+    tabs.map((label, i) => {
+      const shortLabel = snapshot.release && pageLanguage === 'en' ? shortTabLabels.get(label) : null;
+      return '<button type="button" role="tab" id="report-tab-' + i + '" data-tab="' + i + '" aria-controls="report-charts"' +
+        (shortLabel ? ' aria-label="' + escapeHtml(label) + '" title="' + escapeHtml(label) + '"' : '') +
+        ' tabindex="' + (i === selectedTab ? '0' : '-1') + '" aria-selected="' + (i === selectedTab) + '">' +
+        (shortLabel ?? label) + '</button>';
+    }).join('') + '</div>';
 }
 
 function selectControl(label, name, options, current) {
