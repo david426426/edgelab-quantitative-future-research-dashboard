@@ -269,11 +269,95 @@ html[lang=en] .segmented button{white-space:normal}
   .weekday-table thead th:first-child { background: var(--nav); }
   .weekday-table tbody tr:nth-child(even) th:first-child { background: #f5f7fa; }
 }
+
+.header-method { display: none; }
+.research-layout {
+  --paper: #f8f8f2;
+  --panel: #f8f8f2;
+  --ink: #1a2822;
+  --muted: #4e6057;
+  --rule: #d4dad1;
+  --grid: #dde3db;
+  --nav: #eef1e9;
+  --nav-active: #e4ece2;
+  --nav-rule: var(--rule);
+  --gold: #174d3e;
+  --blue: #174d3e;
+  --blue-bg: #e5eee6;
+  --up: #1c6859;
+  --down: #9a503b;
+  --violet: #304a66;
+  --gray: #c9d4cb;
+  --editorial: Georgia, "Noto Serif TC", "PMingLiU", serif;
+}
+.research-layout .mobile-header,
+.research-layout main,
+.research-layout .site-footer { width: min(100% - 48px, 1300px); margin-inline: auto; padding-inline: 0; }
+.research-layout .mobile-header { display: flex; justify-content: space-between; align-items: center; min-height: 71px; gap: 12px; background: transparent; border-bottom: 1px solid var(--rule); }
+.research-layout .mobile-header .wordmark span { width: 24px; height: 24px; }
+.research-layout .header-actions { gap: 20px; font-size: 13px; }
+.research-layout .header-method { display: grid; align-items: center; min-height: 44px; }
+.research-layout .mobile-header button,
+.research-layout [data-language] { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; border: 0; background: transparent; color: var(--blue); padding: 3px 4px; }
+.research-layout #menu-toggle .icon { width: 12px; height: 12px; }
+.research-layout #menu-toggle[aria-expanded=true] { background: var(--blue-bg); }
+.research-layout .sidebar { display: none; position: static; width: min(100% - 48px, 1300px); margin-inline: auto; padding: 16px 12px; border: 0; border-bottom: 1px solid var(--rule); background: var(--nav); }
+.research-layout .sidebar.open { display: block; }
+.research-layout .sidebar > .wordmark,
+.research-layout .sidebar > .brand-note,
+.research-layout .sidebar .method-link,
+.research-layout .masthead,
+.research-layout #navigation > .nav-caption { display: none; }
+.research-layout #navigation { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; border: 0; padding: 0; }
+.research-layout .flow-links { margin: 0; padding: 0; border: 0; }
+.research-layout .flow-links .nav-caption { margin: 9px 12px; color: var(--ink); font-size: 14px; }
+.research-layout .workspace { margin: 0; }
+.research-layout .page-heading { margin-block: 32px 22px; }
+.research-layout .page-heading h1 { font: 400 3.15rem/1.08 var(--editorial); letter-spacing: -.035em; }
+.research-layout .controls { column-gap: 20px; }
+.research-layout .segmented { border-color: transparent; }
+.research-layout .segmented button[aria-pressed=true] { background: var(--blue); border-color: var(--blue); }
+.research-layout .section-tabs button[aria-selected=true] { border-color: var(--blue); }
+.research-layout .card h2 { font: 400 1.42rem/1.2 var(--editorial); }
+.research-layout .report-grid { column-gap: 32px; }
+.research-layout .orb-overview { grid-template-columns: minmax(0, 1fr) minmax(222px, .27fr); align-items: start; margin-top: 17px; }
+.research-layout .orb-overview > .card { grid-column: 1/-1; }
+.research-layout .orb-overview > .card:first-child[data-chart=composition] { grid-column: 1; }
+.research-layout .orb-overview > .overview-summary { grid-column: 2; padding-inline-start: 20px; border-inline-start: 1px solid var(--rule); }
+.research-layout .orb-overview > .overview-summary:first-child { grid-column: 1/-1; padding-inline-start: 0; border-inline-start: 0; }
+.research-layout .orb-overview + .section-tabs { border-top: 1px solid var(--rule); margin-top: 18px; }
+.research-layout .orb-supporting > .card.compact { grid-column: span 3; }
+.research-layout .orb-supporting > .card.wide { grid-column: span 5; }
+.overview-rate { margin-block: 14px; display: grid; gap: 3px; }
+.overview-rate strong { font: 400 2.65rem/1.1 var(--editorial); color: var(--blue); }
+.overview-rate small { color: var(--muted); }
+.overview-counts { margin: 0; }
+.overview-counts div { display: flex; justify-content: space-between; gap: 8px; border-block-end: 1px solid var(--rule); padding: 7px 0; font-size: 13px; }
+.overview-counts dd { margin: 0; font-weight: 620; white-space: nowrap; }
+.research-layout .overview-summary .summary-strip { border: 0; padding-block-start: 14px; }
+.research-layout .chart-table tbody tr:nth-child(even) { background: var(--nav); }
+
+@media (max-width: 760px) {
+  .research-layout .mobile-header, .research-layout .sidebar,
+  .research-layout main, .research-layout .site-footer { width: calc(100% - 28px); }
+  .research-layout .mobile-header { min-height: 58px; }
+  .research-layout .header-actions { gap: 5px; }
+  .research-layout .header-method { display: none; }
+  .research-layout #navigation { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .research-layout .page-heading { margin-block: 22px 14px; }
+  .research-layout .page-heading h1 { font-size: 2rem; }
+  .research-layout .orb-overview { grid-template-columns: minmax(0, 1fr); }
+  .research-layout .orb-overview > .overview-summary { grid-column: 1; padding-inline-start: 0; border-inline-start: 0; }
+  .research-layout .weekday-table tbody tr:nth-child(even) th:first-child { background: var(--nav); }
+}
+@media (max-width: 960px) {
+  .research-layout .orb-supporting > .card { grid-column: 1/-1; }
+}
 </style>
 </head>
 <body>
   <a class="skip" href="#content">跳至報表內容</a>
-  <header class="mobile-header"><a class="wordmark" href="#orb" aria-label="EdgeLab 首頁"><span data-icon="logo"></span>EdgeLab</a><div class="header-actions"><select data-language aria-label="Language / 語言" hidden><option value="en">English</option><option value="zh-Hant" lang="zh-Hant">繁體中文</option></select><button type="button" id="menu-toggle" aria-controls="sidebar" aria-expanded="false"><span data-icon="menu"></span>報表導覽</button></div></header>
+  <header class="mobile-header"><a class="wordmark" href="#orb" aria-label="EdgeLab 首頁"><span data-icon="logo"></span>EdgeLab</a><div class="header-actions"><button type="button" id="menu-toggle" aria-controls="sidebar" aria-expanded="false">報表導覽<span data-icon="chevron"></span></button><a class="header-method" href="#methods">資料與方法</a><select data-language aria-label="Language / 語言" hidden><option value="en">English</option><option value="zh-Hant" lang="zh-Hant">繁體中文</option></select></div></header>
   <aside class="sidebar" id="sidebar">
     <a class="wordmark" href="#orb" aria-label="EdgeLab 首頁"><span data-icon="logo"></span>EdgeLab</a>
     <p class="brand-note">ES 歷史研究</p>
@@ -392,6 +476,13 @@ function summaryStrip(stats) {
 }
 
 function donut(c) {
+  if (c.compactSummary) {
+    const [label, rate] = c.slices[2];
+    const rows = c.slices.filter((_, i) => i !== 2);
+    return '<div class="overview-rate"><span>' + escapeHtml(label) + '</span><strong>' + percent(rateValue(rate)) +
+      '</strong><small>' + ratio(rate) + ' 個有效交易日</small></div><dl class="overview-counts">' + rows.map(([name, counts]) =>
+      '<div><dt>' + escapeHtml(name) + '</dt><dd>' + ratio(counts) + '</dd></div>').join('') + '</dl>';
+  }
   let offset = 0;
   const rings = c.slices.map(([label, r, color]) => {
     const count = r[0];
@@ -595,7 +686,7 @@ function heatmap(c, width, h) {
 }
 
 function composition(c, width, h) {
-  const start = c.labelWidth ?? 50, end = width - 62, top = 8, bottom = h - 31;
+  const start = c.labelWidth ?? 50, end = width - 72, top = 8, bottom = h - 31;
   const rowHeight = (bottom - top) / c.rows.length;
   const barHeight = Math.min(32, rowHeight * 0.67);
   const x = v => position(v, [0, 100], start, end);
@@ -703,12 +794,14 @@ function paintCharts(root, sections) {
   cards.forEach((card, i) => {
     const body = card.querySelector('.chart-content');
     const width = Math.max(240, Math.floor(body.clientWidth));
-    const plotHeight = card.closest('.detail') ? Math.round(height * 1.28) : height;
+    const chart = sections[i];
+    const intervalHeight = root.closest('.research-layout') && chart.type === 'intervals' ? chart.rows.length * 48 + 48 : null;
+    const plotHeight = intervalHeight ?? (card.closest('.detail') ? Math.round(height * 1.28) : height);
     const size = width + 'x' + plotHeight;
     if (body.dataset.size === size) return;
     const wasOpen = body.querySelector('details[open]') !== null;
     body.dataset.size = size;
-    body.innerHTML = chartBody(sections[i], width, plotHeight) + '<div class="chart-tooltip" hidden></div>';
+    body.innerHTML = chartBody(chart, width, plotHeight) + '<div class="chart-tooltip" hidden></div>';
     if (wasOpen && body.querySelector('details')) body.querySelector('details').open = true;
   });
 }
@@ -2221,8 +2314,15 @@ function renderReport(heading = true) {
     }
   }
   const { n } = data;
-  const sections = hasWithheldWeekdays && withheldMonths.length === months.length
+  let sections = hasWithheldWeekdays && withheldMonths.length === months.length
     ? (settings?.weekdays.length ? [] : data.sections.filter(section => !section.weekday)) : data.sections;
+  const orbOverview = snapshot.release && isOrb && selectedTab === 0;
+  if (orbOverview && sections[0]?.type === 'donut') {
+    const [outcomes, ...charts] = sections;
+    const weekday = charts.find(chart => chart.weekday);
+    const summary = { ...outcomes, layout: 'overview-summary', compactSummary: true };
+    sections = weekday ? [weekday, summary, ...charts.filter(chart => chart !== weekday)] : [summary, ...charts];
+  }
   const isSourcePopulation = ['of-delta', 'of-profile', 'of-large', 'of-imb'].includes(report);
   const caveat = isSourcePopulation ? '以有日盤來源記錄的觀察為母體' : '完整 RTH 日盤';
   const weekdayNote = settings?.weekdays.length ? ' · ' + settings.weekdays.map(i => orbWeekdayLabels[i]).join('、') : '';
@@ -2230,9 +2330,13 @@ function renderReport(heading = true) {
     (n > 0 && n < 30 && report !== 'of-profile' ? '<span class="small">樣本少於 30 日</span>' : '') + '</div>';
   const weekdayNotice = hasWithheldWeekdays && hasWeekdayView
     ? '<p class="sample-note"><span class="small">星期統計省略樣本不足的月份。全星期統計仍計入該等月份。</span></p>' : '';
+  const tabBar = tabs ? reportTabs(tabs, meta.title) : '<div class="report-space"></div>';
+  const leadCount = orbOverview && sections[0]?.weekday ? 2 : 0;
+  const lead = leadCount ? '<div class="report-grid orb-overview">' + sections.slice(0, leadCount).map(chartCard).join('') + '</div>' : '';
   const cards = '<div id="report-charts"' + (tabs ? ' role="tabpanel" aria-labelledby="report-tab-' + selectedTab + '"' : '') + '>' +
-    (settings ? rangeControls(tab, settings, duration) : '') + '<div class="report-grid' + (tabs && selectedTab && sections.length === 1 ? ' detail' : '') + '">' +
-    (sections.length ? sections.map(chartCard).join('') : '<p class="error-message" role="status">' +
+    (settings ? rangeControls(tab, settings, duration) : '') + '<div class="report-grid' + (tabs && selectedTab && sections.length === 1 ? ' detail' : '') +
+    (leadCount ? ' orb-supporting' : orbOverview ? ' orb-overview' : '') + '">' +
+    (sections.length ? sections.slice(leadCount).map(chartCard).join('') : '<p class="error-message" role="status">' +
       (hasWithheldWeekdays ? '所選星期沒有可顯示樣本。可改選全部交易日或其他月份。' : '所選條件沒有此報表的有效樣本。') + '</p>') + '</div></div>';
   if (heading) {
     breadcrumb.innerHTML = '<span>' + (isSourcePopulation || report === 'of-cum' ? '訂單流' : '價量分析') +
@@ -2244,7 +2348,7 @@ function renderReport(heading = true) {
     (showSubtitle ? '<p>' + escapeHtml(meta.english) + '</p>' : '') + '</div>' +
     '<div class="report-context"><span class="session">RTH 日盤</span><span class="window-date" aria-live="polite">' +
     fmtDate(from) + ' – ' + fmtDate(to) + '</span></div></header>' +
-    controls(def, param, settings) + weekdayNotice + (tabs ? reportTabs(tabs, meta.title) : '<div class="report-space"></div>') + cards + note +
+    controls(def, param, settings) + weekdayNotice + lead + tabBar + cards + note +
     '<details class="report-method"><summary>報表計算方法</summary><p>' +
     escapeHtml(snapshot.release && pageLanguage === 'en' ? englishMethods[report] : (useMonthly && customMethods[report]) || methods[report]) +
     (snapshot.release && report === 'orb' ? ' 首破時間按 15 分鐘、延伸按 0.25 倍彙總。' : '') + '</p></details>';
@@ -2332,7 +2436,7 @@ main.addEventListener('click', event => {
   if (button.getAttribute('aria-selected') === 'true' || (!toggleWeekday && button.getAttribute('aria-pressed') === 'true')) return;
   reportControls[attr](value);
   renderReport(false);
-  main.querySelector('[' + attr + '="' + value + '"]')?.focus({ preventScroll: true });
+  main.querySelector('[' + attr + '="' + value + '"]')?.focus({ preventScroll: attr !== 'data-tab' });
 });
 main.addEventListener('change', event => {
   const field = event.target.closest('.range-options select');
@@ -2401,7 +2505,10 @@ menu.addEventListener('click', () => {
   sidebar.classList.toggle('open', open);
 });
 sidebar.addEventListener('click', event => {
-  if (event.target.closest('a') && menu.getAttribute('aria-expanded') === 'true') closeMenu();
+  if (event.target.closest('a') && menu.getAttribute('aria-expanded') === 'true') {
+    closeMenu();
+    menu.focus();
+  }
 });
 document.addEventListener('keydown', event => {
   if (event.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') {
@@ -2415,6 +2522,7 @@ try {
   snapshot = JSON.parse(document.querySelector('#statistics').textContent);
   if (snapshot.release) {
     pageLanguage = 'en';
+    document.body.classList.add('research-layout');
     document.documentElement.lang = pageLanguage;
     for (const control of document.querySelectorAll('[data-language]')) {
       control.hidden = false;
